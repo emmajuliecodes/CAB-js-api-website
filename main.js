@@ -24,6 +24,13 @@ for (let i=0; i<countriesCount; i++){
 
     const tr= document.createElement("tr");
 
+    // If creating header here rather than appending to table in html doc
+    // const createTHead(myData);
+    // const row = header.insertRow (0);
+    // clearInterval.innerHTML ="<b>Countries</ b>"
+
+    const myTable= document.getElementById(countriesTable);
+
     const tdCountry= document.createElement("td"); 
     tdCountry.innerText = data[i].name.common;
 
@@ -33,10 +40,15 @@ for (let i=0; i<countriesCount; i++){
     const tdContinent= document.createElement("td");
     tdContinent.innerText = data[i].continents;
 
-    myData.appendChild(tr);
+    const tdFlag= document.createElement("td")
+    tdFlag.innerText= data[i].flag;
+
+    myData.appendChild(countriesTable);
+    countriesTable.appendChild(tr);
     tr.appendChild (tdCountry);
     tr.appendChild (tdCapital);
     tr.appendChild (tdContinent);
+    tr.appendChild (tdFlag);
 
 } 
 
