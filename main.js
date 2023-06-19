@@ -1,54 +1,85 @@
-console.log(data);
+// FETCHING THE DATA
 
-let firstCountryObject= data[0];
-console.log(firstCountryObject); 
+const fetchData = () => {
+	const url = `https://restcountries.com/v3.1/all`;
+	fetch(url)
+		.then((response) => {
+			console.log("response", response);
+			return response.json();
+		})
+		.then((result) => {
+			console.log("Countries data", result);
+            const countriesData = result.response;
+			// controller(countriesData);
+		})
+		.catch((error) => {
+			console.log("error>>>>", error);
+		});
+};
 
-// Accessing a data field (also specified in loop so not needed here)
 
+
+// ACCESSING A DATA FIELD (also specified in loop so not needed here)
+// let firstCountryObject= data[0];s
 // let countryName = firstCountryObject.name.common;
-// console.log(countryName);
 
 // let countryCapital = firstCountryObject.capital;
 // console.log(countryCapital);
 
-// Assigning the length for the loop
-let countriesCount = data.length;
+// ASSIGNING LENGTH FOR LOOP
 
-let myData= document.getElementById("api-data");
+// let countriesCount = countriesData.length;
+
+//  CREATING LOOP & BUILDING TABLE (within a function)
+
+const createHtmlTable = (countriesData) => {
+
+    for (let i=0; i<countriesData; i++){
 
 
+        let myTable= document.getElementById("countriesTable");
+
+        // PRIORITY - FIX TABLE DISPLAY - NOT LOOPING THROUGH THE FETCH ARRAY
+        
+        // myTable.innerText = "";
+        // countriesData.forEach(country,i) => {}
+        // const tr= document.createElement("tr");
+
+        //     // If creating header here rather than appending to table in html doc
+        //     // const createTHead(myData);
+        //     // const row = header.insertRow (0);
+        //     // clearInterval.innerHTML ="<b>Countries</ b>"
 
 
-// Creating the loop for countries - using inline html
-for (let i=0; i<countriesCount; i++){
+        const tdCountry= document.createElement("td");
+        tdCountry.innerText = countriesData[i].name.common;
 
-    const tr= document.createElement("tr");
+        const tdCapital= document.createElement("td");
+        tdCapital.innerText = countriesData[i].capital;
 
-    // If creating header here rather than appending to table in html doc
-    // const createTHead(myData);
-    // const row = header.insertRow (0);
-    // clearInterval.innerHTML ="<b>Countries</ b>"
+        const tdContinent= document.createElement("td");
+        tdContinent.innerText = countriesData[i].continents;
 
-    const myTable= document.getElementById(countriesTable);
+        const tdFlag= document.createElement("td")
+        tdFlag.innerText= countriesData[i].flag;
 
-    const tdCountry= document.createElement("td"); 
-    tdCountry.innerText = data[i].name.common;
+        myTable.appendChild(countriesTable);
+        countriesTable.appendChild(tr);
+        tr.appendChild (tdCountry);
+        tr.appendChild (tdCapital);
+        tr.appendChild (tdContinent);
+        tr.appendChild (tdFlag);
 
-    const tdCapital= document.createElement("td");
-    tdCapital.innerText = data[i].capital;
+    }
+}
 
-    const tdContinent= document.createElement("td");
-    tdContinent.innerText = data[i].continents;
+createHtmlTable(countriesData);
 
-    const tdFlag= document.createElement("td")
-    tdFlag.innerText= data[i].flag;
+// // // FUNCTION CONTROLLER
 
-    myData.appendChild(countriesTable);
-    countriesTable.appendChild(tr);
-    tr.appendChild (tdCountry);
-    tr.appendChild (tdCapital);
-    tr.appendChild (tdContinent);
-    tr.appendChild (tdFlag);
+function controller(countriesData) {
+	createHtmlTable (countriesData);
+}
 
-} 
-
+// controller(countriesData[i]);
+fetchData();
