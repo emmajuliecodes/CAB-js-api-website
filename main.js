@@ -4,82 +4,82 @@ const fetchData = () => {
 	const url = `https://restcountries.com/v3.1/all`;
 	fetch(url)
 		.then((response) => {
-			console.log("response", response);
 			return response.json();
 		})
+		// TODO: Learn why this .then is not retrieving and calling controller with the request API data. Result is undefined.
 		.then((result) => {
-			console.log("Countries data", result);
-            const countriesData = result.response;
-			// controller(countriesData);
+			const countriesData = result;
+			controller(countriesData);
 		})
 		.catch((error) => {
 			console.log("error>>>>", error);
 		});
 };
 
-
-
 // ACCESSING A DATA FIELD (also specified in loop so not needed here)
 // let firstCountryObject= data[0];s
 // let countryName = firstCountryObject.name.common;
 
-// let countryCapital = firstCountryObject.capital;
-// console.log(countryCapital);
-
 // ASSIGNING LENGTH FOR LOOP
-
 // let countriesCount = countriesData.length;
+
 
 //  CREATING LOOP & BUILDING TABLE (within a function)
 
 const createHtmlTable = (countriesData) => {
+    let countryCount = countriesData.length;
 
-    for (let i=0; i<countriesData; i++){
+		let myTable = document.getElementById("countriesTable");
 
+		myTable.innerText = "";
+		countriesData.forEach((country, i) => {
+			const tr = document.createElement("tr");
 
-        let myTable= document.getElementById("countriesTable");
+			//     // If creating header here rather than appending to table in html doc
+			//     // const createTHead(myData);
+			//     // const row = header.insertRow (0);
+			//     // clearInterval.innerHTML ="<b>Countries</ b>"
 
-        // PRIORITY - FIX TABLE DISPLAY - NOT LOOPING THROUGH THE FETCH ARRAY
-        
-        // myTable.innerText = "";
-        // countriesData.forEach(country,i) => {}
-        // const tr= document.createElement("tr");
+			const tdCountry = document.createElement("td");
+			tdCountry.innerText = countriesData[i].name.common;
 
-        //     // If creating header here rather than appending to table in html doc
-        //     // const createTHead(myData);
-        //     // const row = header.insertRow (0);
-        //     // clearInterval.innerHTML ="<b>Countries</ b>"
+			const tdCapital = document.createElement("td");
+			tdCapital.innerText = countriesData[i].capital;
 
+			const tdContinent = document.createElement("td");
+			tdContinent.innerText = countriesData[i].continents;
 
-        const tdCountry= document.createElement("td");
-        tdCountry.innerText = countriesData[i].name.common;
+			const tdFlag = document.createElement("td");
+			tdFlag.innerText = countriesData[i].flag;
 
-        const tdCapital= document.createElement("td");
-        tdCapital.innerText = countriesData[i].capital;
+			myTable.appendChild(tr);
+			tr.appendChild(tdCountry);
+			tr.appendChild(tdCapital);
+			tr.appendChild(tdContinent);
+			tr.appendChild(tdFlag);
+		});
+	}
+// };
 
-        const tdContinent= document.createElement("td");
-        tdContinent.innerText = countriesData[i].continents;
+// CREATING DROPDOWN
 
-        const tdFlag= document.createElement("td")
-        tdFlag.innerText= countriesData[i].flag;
-
-        myTable.appendChild(countriesTable);
-        countriesTable.appendChild(tr);
-        tr.appendChild (tdCountry);
-        tr.appendChild (tdCapital);
-        tr.appendChild (tdContinent);
-        tr.appendChild (tdFlag);
-
-    }
+createContinentDropDown = (countriesData) => {
+    const dropdown = document.getElementById("continentDropdown");
+    
+    const continentsArray = countriesData.map ((country) => {
+        return countriesData.continent;
+        console.log(continentsArray);
+    });
 }
 
-createHtmlTable(countriesData);
+// createHtmlTable(countriesDat <a);
 
-// // // FUNCTION CONTROLLER
+// FUNCTION CONTROLLER
 
-function controller(countriesData) {
-	createHtmlTable (countriesData);
-}
+const controller = (countriesData) => {
+	console.log("in controller", countriesData);
+	createHtmlTable(countriesData);
+    createContinentDropdown(countriesData); 
+};
 
-// controller(countriesData[i]);
 fetchData();
