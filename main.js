@@ -59,27 +59,103 @@ const createHtmlTable = (countriesData) => {
 			tr.appendChild(tdFlag);
 		});
 	}
-// };
 
 // CREATING DROPDOWN
 
-createContinentDropDown = (countriesData) => {
-    const dropdown = document.getElementById("continentDropdown");
+// createContinentDropdown = (countriesData) => {
+// 	console.log(countriesData);
+//     const dropdown = document.getElementById("continentDropdown");
     
-    const continentsArray = countriesData.map ((country) => {
-        return countriesData.continent;
-        console.log(continentsArray);
-    });
-}
+//     const continentsArray = countriesData.map((country)=> {
+//         return country.continents[0];
+//     });
+// 	console.log(continentsArray);
 
-// createHtmlTable(countriesDat <a);
+// 	const uniqueContinentsArray = [...new Set(continentsArray)];
+// 	console.log(uniqueContinentsArray);
+
+// 	uniqueContinentsArray.forEach((continent) => {
+// 		const dropdownOption = document.createElement("option");
+// 		dropdownOption.innerText = continent;
+// 		dropdown.appendChild(dropdownOption)
+// 	}) 
+		
+// 	}
+
+createContinentDropdown = (countriesData) => {
+    const dropdown = document.getElementById("continentDropdown");
+
+	// ADD TO.STRING TO ACCOUNT FOR CONTINENT NAME NOT BEING OBJECT IN CONTINENTS
+    const continentsArray = countriesData.map((country)=> {
+        return country.continents.toString();
+    });
+//   
+//  HACKY WAY TO RETURN UNIQUES - WON'T WORK WITH ALL DATA 
+// 	const continentsArray = countriesData.map((country)=> {
+//         return country.continents[0];
+//     });
+
+//  ALTERNATIVE TO RETURN UNIQUES - FLATMAP FUNCTION
+// 	const continentsArray = countriesData.flatMap((country)=> {
+//         return country.continents;
+//     });
+
+	console.log(continentsArray);
+
+	const uniqueContinentsArray = [...new Set(continentsArray)];
+	console.log(uniqueContinentsArray);
+
+
+	uniqueContinentsArray.forEach((continent) => {
+		const dropdownOption = document.createElement("option");
+		dropdownOption.innerText = continent;
+		dropdown.appendChild(dropdownOption)
+	}) 
+		
+	}
+
+// ADDING EVENT LISTENERS
+
+const setEventListeners = (countriesData) => {
+	document.querySelector("#continentDropdown")
+	.addEventListener ("change", () => {
+		filterByContinentDropdown(countriesData);
+	
+	});
+
+};
+
+// FILTER BY DROPDOWN
+
+const filterByContinentDropdown = (countriesData) => {
+// const { continents } = countriesData;
+
+	const selectedContinent = document.querySelector("#continentDropdown").value;
+	console.log(selectedContinent);
+//  Prints chosen continent in clg
+	
+	const filteredByContinent = countriesData.filter((continent) => {
+		return (countriesData.continent=== selectedContinent || selectedContinent === "all");
+	
+	});
+	console.log(filteredByContinent);
+// TO FIX: clg displays all continents but shows none when a filter is selected
+
+	createHtmlTable(filteredByContinent);
+
+
+};
+
+
 
 // FUNCTION CONTROLLER
 
 const controller = (countriesData) => {
-	console.log("in controller", countriesData);
+	// console.log("in controller", countriesData);
 	createHtmlTable(countriesData);
-    createContinentDropdown(countriesData); 
+    createContinentDropdown(countriesData);
+	setEventListeners(countriesData); 
+	filterByContinentDropdown(countriesData);
 };
 
 fetchData();
