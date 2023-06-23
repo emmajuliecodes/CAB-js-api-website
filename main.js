@@ -119,11 +119,9 @@ const setEventListeners = (countriesData) => {
 		.addEventListener("change", () => {
 			filterByContinentDropdown(countriesData);
 		});
-	document
-		.querySelector("#independenceQuery")
-		.addEventListener("change", (event) => {
-			filterByIndependenceCheckbox(countriesData);
-		});
+	document.querySelector("#independenceQuery").addEventListener("click", () => {
+		filterByIndependenceCheckbox(countriesData);
+	});
 };
 
 // FILTER BY DROPDOWN
@@ -144,22 +142,31 @@ const filterByContinentDropdown = (countriesData) => {
 // FILTER BY INDEPENDENCE CHECKBOX
 
 const filterByIndependenceCheckbox = (countriesData) => {
-	console.log(countriesData[1].independent);
-	// const checkbox = document.querySelector("#independenceQuery").value;
+	const independentChecked = document.getElementById("independenceQuery");
 
-	// // const independentCountries = countriesData.filter(country => countriesData.independent === "true");
-	// const independentCountries = countriesData.map((country, i) => {
-	// 	if (countriesData[i].independent === "true") {
-	// 		return independentCountries;
-	// 	}
-	// });
+	const independentCountries = countriesData.filter((countries, i) => {
+		return countriesData[i].independent === true;
+	});
 
-	const independentCountries = countriesData[i].filter(
-		countriesData[i].independent.value === "true"
-	);
-
-	console.log(independentCountries);
+	if (independentChecked.checked == true) {
+		createHtmlTable(independentCountries);
+	} else if (independentChecked.checked == false) {
+		createHtmlTable(countriesData);
+	}
 };
+
+// COMBINING FILTERS
+
+const combineFilters =
+	(...filters) =>
+	(item) => {
+		return filters.map((filter) => filter(item)).every((x) => x === true);
+	};
+
+const combinedFilters = combineFilters(
+	filterByContinentDropdown,
+	filterByIndependenceCheckbox
+);
 
 // FUNCTION CONTROLLER
 
