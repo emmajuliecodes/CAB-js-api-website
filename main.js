@@ -6,9 +6,8 @@ const fetchData = () => {
 		.then((response) => {
 			return response.json();
 		})
-		// TODO: Learn why this .then is not retrieving and calling controller with the request API data. Result is undefined.
 		.then((result) => {
-			const countriesData = result;
+			const unsortedCountriesData = result;
 			controller(countriesData);
 		})
 		.catch((error) => {
@@ -16,28 +15,34 @@ const fetchData = () => {
 		});
 };
 
-// ACCESSING A DATA FIELD (also specified in loop so not needed here)
-// let firstCountryObject= data[0];s
-// let countryName = firstCountryObject.name.common;
+const countriesData = unsortedCountriesData.sort((a, b) => {
+	if (
+		unsortedCountriesData.countries.name.common(a) <
+		unsortedCountriesData.countries.name.common(b)
+	) {
+		return -1;
+	}
+	if (
+		unsortedCountriesData.countries.name.common(a) >
+		unsortedCountriesData.countries.name.common(b)
+	) {
+		return -1;
+	}
 
-// ASSIGNING LENGTH FOR LOOP
-// let countriesCount = countriesData.length;
+	return 0;
+});
+
+console.log(countriesData);
 
 //  CREATING LOOP & BUILDING TABLE (within a function)
 
 const createHtmlTable = (countriesData) => {
-	let countryCount = countriesData.length;
-
 	let myTable = document.getElementById("countriesTable");
 
 	myTable.innerText = "";
+
 	countriesData.forEach((country, i) => {
 		const tr = document.createElement("tr");
-
-		//     // If creating header here rather than appending to table in html doc
-		//     // const createTHead(myData);
-		//     // const row = header.insertRow (0);
-		//     // clearInterval.innerHTML ="<b>Countries</ b>"
 
 		const tdCountry = document.createElement("td");
 		tdCountry.innerText = countriesData[i].name.common;
@@ -61,26 +66,6 @@ const createHtmlTable = (countriesData) => {
 
 // CREATING DROPDOWN
 
-// createContinentDropdown = (countriesData) => {
-// 	console.log(countriesData);
-//     const dropdown = document.getElementById("continentDropdown");
-
-//     const continentsArray = countriesData.map((country)=> {
-//         return country.continents[0];
-//     });
-// 	console.log(continentsArray);
-
-// 	const uniqueContinentsArray = [...new Set(continentsArray)];
-// 	console.log(uniqueContinentsArray);
-
-// 	uniqueContinentsArray.forEach((continent) => {
-// 		const dropdownOption = document.createElement("option");
-// 		dropdownOption.innerText = continent;
-// 		dropdown.appendChild(dropdownOption)
-// 	})
-
-// 	}
-
 createContinentDropdown = (countriesData) => {
 	const dropdown = document.getElementById("continentDropdown");
 
@@ -88,16 +73,6 @@ createContinentDropdown = (countriesData) => {
 	const continentsArray = countriesData.map((country) => {
 		return country.continents.toString();
 	});
-	//
-	//  HACKY WAY TO RETURN UNIQUES - WON'T WORK WITH ALL DATA
-	// 	const continentsArray = countriesData.map((country)=> {
-	//         return country.continents[0];
-	//     });
-
-	//  ALTERNATIVE TO RETURN UNIQUES - FLATMAP FUNCTION
-	// 	const continentsArray = countriesData.flatMap((country)=> {
-	//         return country.continents;
-	//     });
 
 	console.log(continentsArray);
 
@@ -155,18 +130,12 @@ const filterByIndependenceCheckbox = (countriesData) => {
 	}
 };
 
-// COMBINING FILTERS
+// // // COMBINING FILTERS
+// const combinedFilters = (countriesData) => {
+// 	let filteredData = [...countriesData];
+// 	if (filteredByContinent > 0)
 
-const combineFilters =
-	(...filters) =>
-	(item) => {
-		return filters.map((filter) => filter(item)).every((x) => x === true);
-	};
-
-const combinedFilters = combineFilters(
-	filterByContinentDropdown,
-	filterByIndependenceCheckbox
-);
+// };
 
 // FUNCTION CONTROLLER
 
