@@ -1,5 +1,4 @@
 // FETCHING THE DATA
-
 const fetchData = () => {
 	const url = `https://restcountries.com/v3.1/all`;
 	fetch(url)
@@ -8,6 +7,17 @@ const fetchData = () => {
 		})
 		.then((result) => {
 			const unsortedCountriesData = result;
+			const countriesData = unsortedCountriesData.sort((a, b) => {
+				console.log(unsortedCountriesData);
+				if (a.name.common < b.name.common) {
+					return -1;
+				}
+				if (a.name.common > b.name.common) {
+					return 1;
+				}
+
+				return 0;
+			});
 			controller(countriesData);
 		})
 		.catch((error) => {
@@ -15,31 +25,18 @@ const fetchData = () => {
 		});
 };
 
-const countriesData = unsortedCountriesData.sort((a, b) => {
-	if (
-		unsortedCountriesData.countries.name.common(a) <
-		unsortedCountriesData.countries.name.common(b)
-	) {
-		return -1;
-	}
-	if (
-		unsortedCountriesData.countries.name.common(a) >
-		unsortedCountriesData.countries.name.common(b)
-	) {
-		return -1;
-	}
-
-	return 0;
-});
-
-console.log(countriesData);
-
 //  CREATING LOOP & BUILDING TABLE (within a function)
 
 const createHtmlTable = (countriesData) => {
-	let myTable = document.getElementById("countriesTable");
+	// let myTable = document.getElementById("countriesTable");
 
-	myTable.innerText = "";
+	let tableBody = document.getElementById("tableBody");
+
+	// LINE BELOW CLEANS TABLE
+
+	tableBody.innerText = "";
+
+	tableHead = document.getElementById("tableHeader");
 
 	countriesData.forEach((country, i) => {
 		const tr = document.createElement("tr");
@@ -56,7 +53,7 @@ const createHtmlTable = (countriesData) => {
 		const tdFlag = document.createElement("td");
 		tdFlag.innerText = countriesData[i].flag;
 
-		myTable.appendChild(tr);
+		tableBody.appendChild(tr);
 		tr.appendChild(tdCountry);
 		tr.appendChild(tdCapital);
 		tr.appendChild(tdContinent);
@@ -66,7 +63,7 @@ const createHtmlTable = (countriesData) => {
 
 // CREATING DROPDOWN
 
-createContinentDropdown = (countriesData) => {
+const createContinentDropdown = (countriesData) => {
 	const dropdown = document.getElementById("continentDropdown");
 
 	// ADD TO.STRING TO ACCOUNT FOR CONTINENT NAME NOT BEING OBJECT IN CONTINENTS
@@ -92,60 +89,77 @@ const setEventListeners = (countriesData) => {
 	document
 		.querySelector("#continentDropdown")
 		.addEventListener("change", () => {
-			filterByContinentDropdown(countriesData);
+			console.log("event listener is called");
+			filteredCountries(countriesData);
 		});
 	document.querySelector("#independenceQuery").addEventListener("click", () => {
-		filterByIndependenceCheckbox(countriesData);
+		filteredCountries(countriesData);
 	});
 };
 
-// FILTER BY DROPDOWN
+// ADDING FILTERS - DROPDOWN & CHECKBOX
 
-const filterByContinentDropdown = (countriesData) => {
-	const selectedContinent = document.querySelector("#continentDropdown").value;
+const isCorrectContinent = (country, selectedContinent) => {
+	if (country.continents.toString() === selectedContinent) {
+		console.log("country is ", country);
+		console.log("selected is ", selectedContinent);
+	}
 
-	const filteredByContinent = countriesData.filter((country, i) => {
+	return (
+		country.continents.toString() === selectedContinent ||
+		selectedContinent === "all"
+	);
+};
+const isIndependent = (country, independenceCheck) => {
+	return !independenceCheck || country.independent;
+};
+
+const filteredCountries = (countriesData) => {
+	const independenceCheck =
+		document.getElementById("independenceQuery").checked;
+	const selectedContinent = document.getElementById("continentDropdown").value;
+	console.log("in filtered countries");
+
+	const filteredCountries = countriesData.filter((country) => {
 		return (
-			countriesData[i].continents.toString() === selectedContinent ||
-			selectedContinent === "all"
+			isCorrectContinent(country, selectedContinent) &&
+			isIndependent(country, independenceCheck)
 		);
 	});
 
-	createHtmlTable(filteredByContinent);
+	createHtmlTable(filteredCountries);
 };
 
-// FILTER BY INDEPENDENCE CHECKBOX
+// BUILDING SEARCH BAR
 
-const filterByIndependenceCheckbox = (countriesData) => {
-	const independentChecked = document.getElementById("independenceQuery");
+const searchBar = () => {
+	var input, filter, table, tr, td, i, txtValue;
+	input = document.getElementById("search");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("countriesTable");
+	tr = table.getElementsByTagName("tr");
 
-	const independentCountries = countriesData.filter((countries, i) => {
-		return countriesData[i].independent === true;
-	});
-
-	if (independentChecked.checked == true) {
-		createHtmlTable(independentCountries);
-	} else if (independentChecked.checked == false) {
-		createHtmlTable(countriesData);
+	for (i = 0; i < tr.length; i++) {
+		td = tr[i].getElementsByTagName("td")[0];
+		if (td) {
+			txtValue = td.textContent || td.innerText;
+			if (txtValue.toUpperCase().indexOf(filter) > -1) {
+				tr[i].style.display = "";
+			} else {
+				tr[i].style.display = none;
+			}
+		}
 	}
 };
-
-// // // COMBINING FILTERS
-// const combinedFilters = (countriesData) => {
-// 	let filteredData = [...countriesData];
-// 	if (filteredByContinent > 0)
-
-// };
 
 // FUNCTION CONTROLLER
 
 const controller = (countriesData) => {
-	// console.log("in controller", countriesData);
 	createHtmlTable(countriesData);
 	createContinentDropdown(countriesData);
 	setEventListeners(countriesData);
-	filterByContinentDropdown(countriesData);
-	filterByIndependenceCheckbox(countriesData);
+	filteredCountries(countriesData);
+	searchBar(countriesData);
 };
 
 fetchData();

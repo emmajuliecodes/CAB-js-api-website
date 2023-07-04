@@ -28,17 +28,22 @@
     </div>
     
     <div id="countriesFilter">
-        <form>
+        <form id="searchfilter">
             <p>Use the filters to find the info that you need.</p>
             <label for="search">Search bar</label><br>
-            <input type="text" id="search" name="search"/><br>
-        </form>
-        <div class ="container">
+            <input type="text" id="search" name="search" onkeyup="searchBar()" placeholder="Search the table..."><br>
+        </form><br>
+
+        <div id ="dropdown">
+            <label for="continentDropdown">Select a continent</label><br>
             <select name="continent" id="continentDropdown">
                 <option value="all">All</option></select>
-            </select><br><br>
+            </select>
+        </div><br>
+
+        <div id="checkbox">
              <input type="checkbox" id="independenceQuery" value="independence">
-            <label for="iundependenceQuery">View only independent countries</label>    
+            <label for="independenceQuery">View only independent countries</label>    
         </div>
 
     </div>
@@ -46,17 +51,17 @@
   
     <div id="api-data">
         <table id="countriesTable">
-            <tr>
-                <thead id="tableHeader">
-                <th>Countries</th>
-                <th>Capital</th>
-                <th>Continent</th>
-                <th>Flag</th>
-                </thead>
-                <tbody id="tableBody">
+            <thead id="tableHeader">
+                <tr>
+                    <th>Countries</th>
+                    <th>Capital</th>
+                    <th>Continent</th>
+                    <th>Flag</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
                     
-                </tbody>
-            </tr>
+            </tbody>
         </table>
     </div>
 
